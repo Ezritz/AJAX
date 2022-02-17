@@ -45,13 +45,13 @@
 
     fetch("https://jsonplaceholder.typicode.com/users")
     .then((res) => {
-        console.log(res);
+        // console.log(res);
         // validamos si es que hay un error y este pueda mostrarse
         return res.ok ? res.json(): Promise.reject(res);
     })
     .then((json) => {
         // convertimos body a texto, se mostrara en arreglo de objetos
-        console.log(json)
+        // console.log(json)
         json.forEach((elem) => {
             // creamos elementos del dom li y en estos mostraremos los elementos del json
             const $li = document.createElement("li");
@@ -63,11 +63,51 @@
        
     })
     .catch((err) => {
-        console.log(err);
+        // console.log(err);
         let message = err.statusText || "Ocurrio un error";
         $fetch.innerHTML = `Error ${err.status}: ${message}`;
         
     }).finally(()=>{
-       console.log('Esto se ejecutara siempre, sin importar el resultado de fetch');
+       // console.log('Esto se ejecutara siempre, sin importar el resultado de fetch');
     })
 })();
+
+// fetch async-await
+
+(()=> {
+    const $fetchAsync = document.getElementById("fetch-async"),
+    $fragment = document.createDocumentFragment();  
+
+    async function getData(){
+
+        try{
+            let res = await fetch("https://jsonplaceholder.typicode.com/users"),
+            json = await res.json();
+
+            console.log(res, json);
+
+            // manejamos el error
+            if(!res.ok)throw {status: res.status, statusText:res.statusText}
+
+            json.forEach((elem) => {
+                // creamos elementos del dom li y en estos mostraremos los elementos del json
+                const $li = document.createElement("li");
+                $li.innerHTML = `${elem.name} -- ${elem.email} -- ${elem.phone}`;
+                $fragment.appendChild($li);
+            });
+    
+            $fetchAsync.appendChild($fragment)
+        } catch(err){
+            console.log(err)
+            let message = err.statusText || "Ocurrio un error";
+            $fetchAsync.innerHTML = `Error ${err.status}: ${message}`;
+        } finally{
+
+        }
+
+        
+    }
+
+    getData();
+
+})()
