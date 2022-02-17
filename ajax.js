@@ -84,7 +84,7 @@
             let res = await fetch("https://jsonplaceholder.typicode.com/users"),
             json = await res.json();
 
-            console.log(res, json);
+            // console.log(res, json);
 
             // manejamos el error
             if(!res.ok)throw {status: res.status, statusText:res.statusText}
@@ -98,7 +98,7 @@
     
             $fetchAsync.appendChild($fragment)
         } catch(err){
-            console.log(err)
+           // console.log(err)
             let message = err.statusText || "Ocurrio un error";
             $fetchAsync.innerHTML = `Error ${err.status}: ${message}`;
         } finally{
@@ -110,4 +110,35 @@
 
     getData();
 
-})()
+})();
+
+// axios
+
+(()=>{
+    const $axios = document.getElementById("axios"),
+    $fragment = document.createDocumentFragment();
+
+    axios
+    .get("https://jsonplaceholder.typicode.com/users")
+    .then((res)=>{
+        console.log(res);
+        let json = res.data;
+        json.forEach((elem) => {
+            // creamos elementos del dom li y en estos mostraremos los elementos del json
+            const $li = document.createElement("li");
+            $li.innerHTML = `${elem.name} -- ${elem.email} -- ${elem.phone}`;
+            $fragment.appendChild($li);
+        });
+
+        $axios.appendChild($fragment)
+    })
+    .catch((err)=>{
+        // se llama el response para obtener los detalles del error, segun la documentacion de axios en el manejo de errores
+        console.log('error',err.response);
+        let message = err.response.statusText || "Ocurrio un error";
+        $axios.innerHTML = `Error ${err.response.status}: ${message}`;
+    })
+    .finally(()=>{
+        console.log('Esto se ejecutara independientemente del resultado de axios')
+    });
+})();
